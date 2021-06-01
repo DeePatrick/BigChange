@@ -5,88 +5,162 @@
 }
 
 <style>
-    .box {
-        padding-top: 50px;
-    }
 
-    .multi {
+    select {
         min-width: 200px;
+        padding: 10px;
     }
 
-    .btn {
+    button {
         min-width: 100px;
+    }
+
+    .other {
+        font-weight: bold !important;
+        color:blue;
+    }
+    .red{
+        color:red;
     }
 </style>
 
 
-@using (Html.BeginForm())
-{
-
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <label class="col-md-2" for="multiples">Multiples of 3 and 5 </label>
-                <div class="col-md-10">
-                    <select id="multiples" class="form-select multi" aria-label="Default select example">
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-10">
+                <div id="container">
+                    <select id="multiples-holder" style="display:none">
                         @if (Listnumbers != null)
                         {
-                            <option selected value="">--   Select   --</option>
                             foreach (var num in Listnumbers)
                             {
-                                <option value="num">
-                                    @num
-                                </option>
+                                <option value="@num">@num</option>
                             }
                         }
                     </select>
                 </div>
 
             </div>
-            <hr />
-            <br />
-
-            <div class="row">
-                <div class="col-md-6">
-                    <span class="col-md-2" for="removeBelowTen">Remove below ten</span>
-                    <div class="col-md-10">
-                        <button onClick="removeBelowTen() class="btn btn-info btn-sm">Remove</button>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <span class="col-md-2" for="lowermultiples">Lower Multiples of 3 and 5</span>
-                    <div class="col-md-10">
-                        <button onClick="bolden() class="btn btn-success btn-sm">Bolden</button>
-                    </div>
-                </div>
-            </div>
-
 
         </div>
+        <hr />
+        <br />
+
+        <div class="row">
+            <div class="col-md-6">
+                <span class="col-md-2" for="removeBelowTen">Below Ten</span>
+                <div class="col-md-10">
+                    <button id="remove" class="btn btn-info btn-sm">Remove</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <span class="col-md-2" for="lowermultiples">Lower Multiples</span>
+                <div class="col-md-10">
+                    <button id="bolden" class="btn btn-success btn-sm">Bolden</button>
+                </div>
+            </div>
+        </div>
+
+
     </div>
-}
+</div>
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
 
+        var array = [];
+        var ddl = document.getElementById('multiples-holder');
+        for (i = 0; i < ddl.options.length; i++) {
+            array[i] = ddl.options[i].value;
+        }
 
-        function removeBelowTen() {
+        var select = document.createElement("select");
+        select.name = "multiples";
+        select.id = "multiples"
 
-            var multiples = $("#multiples").val();
+        for (const val of array) {
+            var option = document.createElement("option");
+            option.value = val;
+            option.text = val.charAt(0).toUpperCase() + val.slice(1);
+            select.appendChild(option);
+        }
 
-            if (multiples) {
-                var filtered = multiples.filter(function (value, index, arr) {
-                    return value > 10;
+        var label = document.createElement("label");
+        label.innerHTML = "Choose a number: "
+        label.htmlFor = "multiples";
+
+        document.getElementById("container").appendChild(label).appendChild(select);
+
+
+
+        $("#remove").click(function () {
+            if (array.length > 0) {
+                var greaterThanTen = array.filter(function (item) {
+                    return item > 10;
                 });
-                $("#multiples").val(filtered);
-                alert("Dropdown list updated!");
+
+                select = document.getElementById("multiples");
+                var length = select.options.length;
+                for (i = length - 1; i >= 0; i--) {
+                    select.options[i] = null;
+                }
+
+                for (const val of greaterThanTen) {
+                    var option = document.createElement("option");
+                    option.value = val;
+                    option.text = val.charAt(0).toUpperCase() + val.slice(1);
+                    select.appendChild(option);
+                }
+
+                document.getElementById("container").appendChild(label).appendChild(select);
             }
 
 
-        }
+        });
 
-        function bolden() {
 
-        }
+        $("#bolden").click(function () {
 
+            if (array.length > 0) {
+                var multiplesThreeAndFive = array.filter(function (item) {
+                    return (item % 3 === 0 && item % 5 === 0);
+                });
+
+                console.log(multiplesThreeAndFive);
+
+                select = document.getElementById("multiples");
+                var length = select.options.length;
+                for (i = length - 1; i >= 0; i--) {
+                    select.options[i] = null;
+                }
+
+                for (const val of array) {
+                    for (const x in multiplesThreeAndFive) {
+                        if (val == x) {
+                            var option = document.createElement("option");
+                            option.value = val;
+                            option.text = val.charAt(0).toUpperCase() + val.slice(1);
+                            option.classList.add("other");
+                            $("option").addClass("other");
+                            select.appendChild(option);
+                        }
+                        else {
+                            var option = document.createElement("option");
+                            option.value = val;
+                            option.text = val.charAt(0).toUpperCase() + val.slice(1);
+                            $("option").addClass("boy");
+                            select.appendChild(option);
+                        }
+                    }
+
+                }
+                document.getElementById("container").appendChild(label).appendChild(select);    
+            }
+        });
     });
 </script>
 

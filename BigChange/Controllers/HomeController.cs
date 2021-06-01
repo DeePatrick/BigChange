@@ -17,8 +17,8 @@ namespace BigChange.Controllers
 
             ViewData.Model = Numbers;
 
+            //return Json(Numbers, JsonRequestBehavior.AllowGet);
             return View(Numbers);
         }
-
     }
 }
