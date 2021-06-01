@@ -10,14 +10,12 @@ namespace BigChange.Controllers
     {
         public ActionResult Index()
         {
-            IEnumerable<int> Numbers = Enumerable.Range(1, 100)
+            IEnumerable<int> Numbers = Enumerable.Range(1, 500)
             .Where(num => num % 5 == 0 || num % 3 == 0)
             .Take(50)
             .Select(val => val);
 
             ViewData.Model = Numbers;
-
-            //return Json(Numbers, JsonRequestBehavior.AllowGet);
             return View(Numbers);
         }
     }
